@@ -1,7 +1,7 @@
 {
-  "name": "importer",
+  "name": "opencolor-converter",
   "version": "1.0.0",
-  "description": "Import for Open Color Tools",
+  "description": "Converter towards Open Color File Format",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,6 +11,7 @@
   "dependencies": {
     "binary": "^0.3.0",
     "color": "^0.11.1",
+    "gonzales-pe": "^3.2.6",
     "opencolor": "github:opencolor-tools/opencolor-js"
   }
 }
