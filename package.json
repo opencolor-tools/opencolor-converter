@@ -1,0 +1,16 @@
+{
+  "name": "importer",
+  "version": "1.0.0",
+  "description": "Import for Open Color Tools",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "binary": "^0.3.0",
+    "color": "^0.11.1",
+    "opencolor": "github:opencolor-tools/opencolor-js"
+  }
+}
