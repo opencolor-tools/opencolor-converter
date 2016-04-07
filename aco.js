@@ -129,20 +129,12 @@ var convert = function(buf, config) {
     //the length of previous names in bytes
     lastNamesLength = lastNamesLength + (color.lenplus1 * 2);
 
-    // material design magic
-    if(colorName.indexOf(' - Primary') !== -1) {
-      colorName = colorName.replace(' - Primary', '');
-    } 
-    var nameParts = colorName.split(" ");
-    var groupName = nameParts.slice(0, nameParts.length -1).join(" ");
-    colorName = nameParts[nameParts.length - 1];
-
-    var group = null;
+    var groupName = null;
     var processedName = config.colorNameProcessor(colorName);
     colorName = processedName.colorName;
-    group = processedName.groupName;
+    groupName = processedName.groupName;
 
-    if(group != null) {
+    if(groupName != null) {
       if(Object.keys(groups).indexOf(groupName) != -1) {
         group = groups[groupName];
       } else {
@@ -196,8 +188,8 @@ var palette = convert(
   }
 );
 
-//var renderer = new oco.Renderer(palette);
-var ocoString = oco.render(palette);
-console.log(ocoString);
+// var renderer = new oco.Renderer(palette);
+// var ocoString = oco.render(palette);
+// console.log(ocoString);
 
 module.exports = convert;
