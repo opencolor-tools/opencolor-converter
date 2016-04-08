@@ -4,12 +4,6 @@ var gonzales = require('gonzales-pe')
   , oco = require('opencolor')
   ;
 
-var less = `
-.hello {
-  $world: #F00;
-}
-`;
-
 var convert = function(input, config) {
 
   var config = Object.assign({}, {
@@ -31,17 +25,17 @@ var convert = function(input, config) {
   var name = null;
   parseTree.traverseByTypes(['ident', 'color'], function(node, index, parent) {
     if (node.is('ident')) {
-      console.log("ident", node);
+      // console.log("ident", node);
       name = node.content;
     }
     if (name && node.is('color')) {
 
-      console.log("color", node);
+      // console.log("color", node);
       var colorValue = Color('#' + node.content);
       var processedNames = config.colorNameProcessor(name);
       var colorName = processedNames.colorName;
       var group = processedNames.groupName;
-      
+
       if(group != null) {
         if(Object.keys(groups).indexOf(groupName) != -1) {
           group = groups[groupName];
@@ -66,6 +60,11 @@ var convert = function(input, config) {
   return ocoPalette;
 };
 
+// var less = `
+// .hello {
+//   $world: #F00;
+// }
+// `;
 // var tree = convert(less);
 // console.log(tree);
 // console.log(oco.render(tree));

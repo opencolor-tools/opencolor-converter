@@ -169,24 +169,24 @@ var convert = function(buf, config) {
   return ocoPalette;
 }
 
-var palette = convert(
-  fs.readFileSync('Material Palette.aco'),
-  {
-    colorNameProcessor: function(colorName) {
-      if(colorName.indexOf(' - Primary') !== -1) {
-        colorName = colorName.replace(' - Primary', '');
-      } 
-      var nameParts = colorName.split(" ");
-      var groupName = nameParts.slice(0, nameParts.length -1).join(" ");
-      console.log(groupName);
-      colorName = nameParts[nameParts.length - 1];
-      return {
-        colorName: colorName,
-        groupName: groupName
-      }
-    }
-  }
-);
+// var palette = convert(
+//   fs.readFileSync('Material Palette.aco'),
+//   {
+//     colorNameProcessor: function(colorName) {
+//       if(colorName.indexOf(' - Primary') !== -1) {
+//         colorName = colorName.replace(' - Primary', '');
+//       } 
+//       var nameParts = colorName.split(" ");
+//       var groupName = nameParts.slice(0, nameParts.length -1).join(" ");
+//       // console.log(groupName);
+//       colorName = nameParts[nameParts.length - 1];
+//       return {
+//         colorName: colorName,
+//         groupName: groupName
+//       }
+//     }
+//   }
+// );
 
 // var renderer = new oco.Renderer(palette);
 // var ocoString = oco.render(palette);
