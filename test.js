@@ -1,5 +1,4 @@
 var fs = require('fs');
-var oco = require('opencolor');
 var converter = require('./index');
 
 var materialDesignConfig = {
@@ -19,11 +18,11 @@ var materialDesignConfig = {
 };
 
 var acoPalette = converter.importAco(fs.readFileSync('Material Palette.aco'), materialDesignConfig);
-var ocoStringOfAco = oco.render(acoPalette);
+var ocoStringOfAco = converter.renderOco(acoPalette);
 
 fs.writeFileSync('Material Palette.oco', ocoStringOfAco, 'utf-8');
 
 var lessPalette = converter.importLess(fs.readFileSync('bootstrap-variables.less', 'utf-8'));
-var ocoStringOfLess = oco.render(lessPalette);
+var ocoStringOfLess = converter.renderOco(lessPalette);
 
 fs.writeFileSync('bootstrap-variables.oco', ocoStringOfLess, 'utf-8');
