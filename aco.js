@@ -129,6 +129,7 @@ var convert = function(buf, config) {
     //the length of previous names in bytes
     lastNamesLength = lastNamesLength + (color.lenplus1 * 2);
 
+    var group = null;
     var groupName = null;
     var processedName = config.colorNameProcessor(colorName);
     colorName = processedName.colorName;
