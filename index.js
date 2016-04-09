@@ -9,11 +9,15 @@ var converter = {
   },
 
   importLess: function importLess(data, config) {
-    return lessConverter(data, config);
+    return lessConverter.import(data, config);
   },
 
   importCss: function importLess(data, config) {
     return cssConverter(data, config);
+  },
+
+  exportLess: function exportLess(ocoTree, config) {
+    return lessConverter.export(ocoTree, config);
   },
 
   renderOco: function renderOco(ocoTree) {

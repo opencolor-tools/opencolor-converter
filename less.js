@@ -4,7 +4,7 @@ var gonzales = require('gonzales-pe')
   , oco = require('opencolor')
   ;
 
-var convert = function(input, config) {
+var importer = function(input, config) {
 
   var config = Object.assign({}, {
     colorNameProcessor: function(name) {
@@ -60,13 +60,44 @@ var convert = function(input, config) {
   return ocoPalette;
 };
 
-// var less = `
-// .hello {
-//   $world: #F00;
-// }
-// `;
-// var tree = convert(less);
-// console.log(tree);
-// console.log(oco.render(tree));
+function traverseTree(subtree, path, callback) {
+  subtree.forEach(function(entry) {
+    if (entry.type === 'Entry') {
+      traverseTree(entry, path.concat([entry.name]), callback);
+    } else if (entry.type === 'Reference') {
+      callback(path, entry.resolved());
+    } else {
+      callback(path, entry);
+    }
+  });
+}
 
-module.exports = convert;
+var exporter = function(ocoTree, config) {
+  var colors = {};
+  traverseTree(ocoTree, [], function(path, entry) {
+    if (entry.type === 'Color') {
+      var colorValue = entry.get('rgb').value;
+      var colorName = entry.name.replace(' ', '')
+      var fullPath = path.join(".").replace(' ', '')
+      var dotPath = fullPath + "-" + colorName;
+      dotPath = dotPath.toLowerCase();
+
+      colors[dotPath] = colorValue;
+    }
+  });
+
+  var str = "//\n";
+  str += "// automatic export from oco\n\n"
+
+  for (var key in colors) {
+    str += "@" + key + ": " + colors[key] + ";\n"
+  }
+
+  return str;
+}
+
+
+module.exports = {
+  import: importer,
+  export: exporter,
+};
