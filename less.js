@@ -34,7 +34,8 @@ var convert = function(input, config) {
       var colorValue = Color('#' + node.content);
       var processedNames = config.colorNameProcessor(name);
       var colorName = processedNames.colorName;
-      var group = processedNames.groupName;
+      var groupName = processedNames.groupName;
+      var group = null;
 
       if(group != null) {
         if(Object.keys(groups).indexOf(groupName) != -1) {
@@ -55,6 +56,10 @@ var convert = function(input, config) {
 
       name = null;
     }
+  });
+
+  Object.keys(groups).forEach(function(k) {
+    ocoPalette.addChild(groups[k]);
   });
 
   return ocoPalette;
