@@ -37,7 +37,7 @@ var importer = function(input, config) {
       var groupName = processedNames.groupName;
       var group = null;
 
-      if(group != null) {
+      if(groupName != null) {
         if(Object.keys(groups).indexOf(groupName) != -1) {
           group = groups[groupName];
         } else {
