@@ -8,6 +8,8 @@ The frist example demonstrates the conversion of Material Palette.aco into an oc
 
 ## Less
 
+## Sass
+
 ## CSS
 
 # Examples
