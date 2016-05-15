@@ -65,7 +65,7 @@ var convert = function(buf, config) {
         }
         //give these colors an index number for later use
         color.index = colorCount-1;
-        
+
         //skip to the next color
         this.skip(( (vars.lenplus1) * 2));
       }
@@ -100,13 +100,13 @@ var convert = function(buf, config) {
   }
 
   var palette = "";
-  var ocoPalette = new oco.Entry('Root');
+  var ocoPalette = new oco.Entry();
 
   function hexToAscii(hex) {
     var ascii = "";
     for (var i = 0; i < hex.length; i += 2) {
       ascii += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
-    }  
+    }
     return ascii;
   }
 
@@ -139,7 +139,7 @@ var convert = function(buf, config) {
       if(Object.keys(groups).indexOf(groupName) != -1) {
         group = groups[groupName];
       } else {
-        group = new oco.Entry(groupName, [], 'Entry');
+        group = new oco.Entry(groupName, [], 'Palette');
         groups[groupName] = group;
       }
     }
@@ -155,12 +155,12 @@ var convert = function(buf, config) {
       } else {
         ocoPalette.addChild(colorEntry, [], 'color');
       }
-      
-    } 
+
+    }
     if (color.colorSpace === 1) {
       console.err("unsupported color space");
     }
-    
+
   }
 
   Object.keys(groups).forEach(function(k) {
@@ -176,7 +176,7 @@ var convert = function(buf, config) {
 //     colorNameProcessor: function(colorName) {
 //       if(colorName.indexOf(' - Primary') !== -1) {
 //         colorName = colorName.replace(' - Primary', '');
-//       } 
+//       }
 //       var nameParts = colorName.split(" ");
 //       var groupName = nameParts.slice(0, nameParts.length -1).join(" ");
 //       // console.log(groupName);

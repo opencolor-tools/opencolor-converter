@@ -12,6 +12,6 @@
     "binary": "^0.3.0",
     "color": "^0.11.1",
     "gonzales-pe": "^3.2.6",
-    "opencolor": "github:opencolor-tools/opencolor-js"
+    "opencolor": "github:opencolor-tools/opencolor-js#fc00d7ed5f228f733fe8801485d2bbb5f866861b"
   }
 }

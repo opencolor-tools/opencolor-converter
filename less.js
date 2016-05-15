@@ -16,7 +16,7 @@ var importer = function(input, config) {
     }
   }, config);
 
-  var ocoPalette = new oco.Entry('Root');
+  var ocoPalette = new oco.Entry();
   var groups = {};
 
   var parseTree = gonzales.parse(input, {syntax: 'less', rule: 'declaration'});
@@ -41,7 +41,7 @@ var importer = function(input, config) {
         if(Object.keys(groups).indexOf(groupName) != -1) {
           group = groups[groupName];
         } else {
-          group = new oco.Entry(groupName, [], 'Entry');
+          group = new oco.Entry(groupName, [], 'Palette');
           groups[groupName] = group;
         }
       }
@@ -67,7 +67,7 @@ var importer = function(input, config) {
 
 function traverseTree(subtree, path, callback) {
   subtree.forEach(function(entry) {
-    if (entry.type === 'Entry') {
+    if (entry.type === 'Palette') {
       traverseTree(entry, path.concat([entry.name]), callback);
     } else if (entry.type === 'Reference') {
       callback(path, entry.resolved());
