@@ -18,6 +18,9 @@ const defaultExporterOptions = {
     },
     'color': (name) => {
       return /(color|fg|text|font)/.test(name)
+    },
+    'border': (name) => {
+      return /border.*/.test(name)
     }
   }
 }
@@ -32,6 +35,11 @@ export const importer = createImporter(defaultImporterOptions, (input, options) 
     var ocoPalette = new oco.Entry()
 
     var parseTree = gonzales.parse(input)
+
+    var selectorPropertyGlue = ' - '
+    if (options.groupBySelector) {
+      selectorPropertyGlue = '.'
+    }
 
     parseTree.traverseByTypes(['ruleset'], (node, index, parent) => {
       var selectors = []
@@ -48,26 +56,22 @@ export const importer = createImporter(defaultImporterOptions, (input, options) 
       })
       node.traverseByTypes(['declaration'], (node, index, parent) => {
         var cssProperty = ''
-        node.traverseByTypes(['ident', 'color'], (node, index, parent) => {
-          if (node.is('ident')) {
+        node.traverseByTypes(['property'], (node, index, parent) => {
+          node.traverseByTypes(['ident'], (node, index, parent) => {
             cssProperty = node.content
-          }
-          if (node.is('color')) {
-            var colorValue = Color('#' + node.content)
-            var colorEntry = new oco.Entry(cssProperty, [oco.ColorValue.fromColorValue(colorValue.hexString())])
-            if (options.groupBySelector) {
-              if (options.groupAllSelectors) {
-                selectors.forEach((group) => {
-                  var path = group.join(' ') + '.' + cssProperty
-                  ocoPalette.set(path, colorEntry.clone())
-                })
-              } else {
-                var path = selectors[0].join(' ') + '.' + cssProperty
-                ocoPalette.set(path, colorEntry)
-              }
-            } else {
-              ocoPalette.set(cssProperty, colorEntry)
-            }
+          })
+        })
+        node.traverseByTypes(['color'], (node, index, parent) => {
+          var colorValue = Color('#' + node.content)
+          var colorEntry = new oco.Entry(cssProperty, [oco.ColorValue.fromColorValue(colorValue.hexString())])
+          if (options.groupAllSelectors) {
+            selectors.forEach((group) => {
+              var path = group.join(' ') + selectorPropertyGlue + cssProperty
+              ocoPalette.set(path, colorEntry.clone())
+            })
+          } else {
+            var path = selectors[0].join(' ') + selectorPropertyGlue + cssProperty
+            ocoPalette.set(path, colorEntry)
           }
         })
       })

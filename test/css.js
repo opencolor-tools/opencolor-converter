@@ -12,6 +12,17 @@ describe('CSS Converter', () => {
         expect(tree.get('body.background-color').hexcolor()).to.equal('#FF0000')
       })
     })
+    it('should import border colors', () => {
+      return importer(`body {
+  border-color: #111111;
+  border-color-bottom: #222222;
+  border: 1px solid #333333;
+      }`).then((tree) => {
+        expect(tree.get('body.border-color').hexcolor()).to.equal('#111111')
+        expect(tree.get('body.border-color-bottom').hexcolor()).to.equal('#222222')
+        expect(tree.get('body.border').hexcolor()).to.equal('#333333')
+      })
+    })
     it('should import more than one color per ruleset', () => {
       return importer(`body {
   background-color: #F00;
