@@ -3,7 +3,7 @@ import {expect} from 'chai'
 import * as converter from '../lib'
 
 describe('Converter API', () => {
-  xit('should convert less', () => {
+  it('should convert less', () => {
     expect(converter).to.have.ownProperty('less')
   })
   xit('should convert aco', () => {

@@ -1,6 +1,4 @@
-import gonzales from 'gonzales-pe'
-import Color from 'color'
-import oco from 'opencolor'
+import {stylsheetImporter} from './stylesheet'
 import {createImporter, createExporter} from './factory'
 
 const defaultImporterOptions = {
@@ -31,58 +29,10 @@ export const importer = createImporter(defaultImporterOptions, (input, options) 
   if (options.selectors && options.selectors.length && options.selectors.some(selector => validSelectors.indexOf(selector) === -1)) {
     return Promise.reject(new Error(`Invalid option scope: ${options.selector.join(', ')} - valid elements are ${validSelectors.join(', ')}`))
   }
-  return new Promise((resolve, reject) => {
-    var ocoPalette = new oco.Entry()
-
-    var parseTree = gonzales.parse(input)
-
-    var selectorPropertyGlue = ' - '
-    if (options.groupBySelector) {
-      selectorPropertyGlue = '.'
-    }
-
-    parseTree.traverseByTypes(['ruleset'], (node, index, parent) => {
-      var selectors = []
-      // class, id, typeSelector
-      node.traverseByTypes(['selector'], (node, index, parent) => {
-        var selectorParts = []
-        node.traverseByTypes(options.selectors, (node, index, parent) => {
-          node.traverseByTypes(['ident'], (node, index, parent) => {
-            selectorParts.push(node.content)
-          })
-        })
-        selectors.push(selectorParts)
-        selectorParts = []
-      })
-      node.traverseByTypes(['declaration'], (node, index, parent) => {
-        var cssProperty = ''
-        node.traverseByTypes(['property'], (node, index, parent) => {
-          node.traverseByTypes(['ident'], (node, index, parent) => {
-            cssProperty = node.content
-          })
-        })
-        node.traverseByTypes(['color'], (node, index, parent) => {
-          var colorValue = Color('#' + node.content)
-          var colorEntry = new oco.Entry(cssProperty, [oco.ColorValue.fromColorValue(colorValue.hexString())])
-          if (options.groupAllSelectors) {
-            selectors.forEach((group) => {
-              var path = group.join(' ') + selectorPropertyGlue + cssProperty
-              ocoPalette.set(path, colorEntry.clone())
-            })
-          } else {
-            var path = selectors[0].join(' ') + selectorPropertyGlue + cssProperty
-            ocoPalette.set(path, colorEntry)
-          }
-        })
-      })
-      selectors = []
-    })
-
-    resolve(ocoPalette)
-  })
+  return stylsheetImporter(input, options, 'css')
 })
 
-function getProperty (entryName, options) {
+function getPropertyName (entryName, options) {
   return Object.keys(options.propertyMapping).find((propertyName) => {
     return options.propertyMapping[propertyName](entryName)
   })
@@ -100,7 +50,7 @@ export const exporter = createExporter(defaultExporterOptions, (tree, options) =
     }
     if (options.mapProperties) {
       tree.exportEntries((entry) => {
-        var propertyName = getProperty(entry.name, options)
+        var propertyName = getPropertyName(entry.name, options)
         lines.push(`${propertyName}: ${entry.hexcolor()}`)
       })
     }
