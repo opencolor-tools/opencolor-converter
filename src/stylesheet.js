@@ -13,6 +13,38 @@ export const stylsheetImporter = function (input, options, syntax) {
       selectorPropertyGlue = '.'
     }
 
+    function addEntryWithSelectors (selectors, name, entry) {
+      if (options.groupAllSelectors) {
+        selectors.forEach((group) => {
+          var path = group.join(' ') + selectorPropertyGlue + name
+          ocoPalette.set(path, entry.clone())
+        })
+      } else {
+        var path = selectors[0].join(' ') + selectorPropertyGlue + name
+        ocoPalette.set(path, entry)
+      }
+    }
+
+    //console.log(parseTree.toJson())
+    // less variables one root level
+    parseTree.traverseByTypes(['atrule'], (node, index, parent) => {
+      if (node.contains('color')) {
+        var variableName = node.first('atkeyword').first('ident').content
+        var colorValue = Color('#' + node.first('color').content)
+        var colorEntry = new oco.Entry(variableName, [oco.ColorValue.fromColorValue(colorValue.hexString())])
+        ocoPalette.set(variableName, colorEntry)
+      }
+    })
+    // less variable assignments one root level
+    parseTree.traverseByTypes(['declaration'], (node, index, parent) => {
+      if (node.contains('value') && node.first('value').contains('variable')) {
+        var variableName = node.first('property').first('ident').content
+        var path = node.first('value').first('variable').first('ident').content
+        var refrenceEntry = new oco.Reference(variableName, path)
+        ocoPalette.set(variableName, refrenceEntry)
+      }
+    })
+
     parseTree.traverseByTypes(['ruleset'], (node, index, parent) => {
       var selectors = []
       // class, id, typeSelector
@@ -33,18 +65,16 @@ export const stylsheetImporter = function (input, options, syntax) {
             cssProperty = node.content
           })
         })
-        node.traverseByTypes(['color'], (node, index, parent) => {
-          var colorValue = Color('#' + node.content)
-          var colorEntry = new oco.Entry(cssProperty, [oco.ColorValue.fromColorValue(colorValue.hexString())])
-          if (options.groupAllSelectors) {
-            selectors.forEach((group) => {
-              var path = group.join(' ') + selectorPropertyGlue + cssProperty
-              ocoPalette.set(path, colorEntry.clone())
-            })
-          } else {
-            var path = selectors[0].join(' ') + selectorPropertyGlue + cssProperty
-            ocoPalette.set(path, colorEntry)
-          }
+        node.traverseByTypes(['value'], (node, index, parent) => {
+          node.traverseByTypes(['color'], (node, index, parent) => {
+            var colorValue = Color('#' + node.content)
+            var colorEntry = new oco.Entry(cssProperty, [oco.ColorValue.fromColorValue(colorValue.hexString())])
+            addEntryWithSelectors(selectors, cssProperty, colorEntry)
+          })
+          node.traverseByTypes(['variable'], (node, index, parent) => {
+            var refrenceEntry = new oco.Reference(cssProperty, node.first('ident').content)
+            addEntryWithSelectors(selectors, cssProperty, refrenceEntry)
+          })
         })
       })
       selectors = []
