@@ -1,33 +1,33 @@
 /* eslint-env mocha */
 import {expect} from 'chai'
 import oco from 'opencolor'
-import {importer, exporter} from '../src/less'
+import {importer, exporter} from '../src/scss'
 
-describe('Less Converter', () => {
+describe('SCSS Converter', () => {
   describe('Importer', () => {
     it('should import one variable', () => {
       return importer(`
-@one: #111111
+$one: #111111
       `).then((tree) => {
         expect(tree.get('one').hexcolor()).to.equal('#111111')
       })
     })
-    xit('should create references for variable assignments', () => {
+    it('should create references for variable assignments', () => {
       return importer(`
-@one: #111111;
-@color: @one
+$one: #111111;
+$onRef: $one
       `).then((tree) => {
         expect(tree.get('one').hexcolor()).to.equal('#111111')
-        expect(tree.get('color').type).to.equal('Reference')
-        expect(tree.get('color').resolved().type).to.equal('Color')
-        expect(tree.get('color').resolved().hexcolor()).to.equal('#111111')
+        expect(tree.get('onRef').type).to.equal('Reference')
+        expect(tree.get('onRef').resolved().type).to.equal('Color')
+        expect(tree.get('onRef').resolved().hexcolor()).to.equal('#111111')
       })
     })
     it('should create references for variable assignments in rulesets', () => {
       return importer(`
-@one: #111111;
+$one: #111111;
 body {
-  color: @one
+  color: $one
 }
       `).then((tree) => {
         expect(tree.get('one').hexcolor()).to.equal('#111111')
@@ -38,8 +38,8 @@ body {
     })
     it('should import multiple variables', () => {
       return importer(`
-@one: #111111;
-@two: #222222;
+$one: #111111;
+$two: #222222;
       `).then((tree) => {
         expect(tree.get('one').hexcolor()).to.equal('#111111')
         expect(tree.get('two').hexcolor()).to.equal('#222222')
@@ -48,8 +48,8 @@ body {
     it('should import variables inside selectors', () => {
       return importer(`
 body {
-  @one: #111111;
-  @two: #222222;
+  $one: #111111;
+  $two: #222222;
 }
       `).then((tree) => {
         expect(tree.get('body.one').hexcolor()).to.equal('#111111')
@@ -62,8 +62,8 @@ body {
       const tree = oco.parse(`
 color: #111111
 `)
-      return exporter(tree).then((less) => {
-        expect(less).to.contain('@color: #111111')
+      return exporter(tree).then((scss) => {
+        expect(scss).to.contain('$color: #111111')
       })
     })
     it('should export refrences', () => {
@@ -71,9 +71,9 @@ color: #111111
 one: #111111
 refToOne: =one
 `)
-      return exporter.configure({})(tree).then((less) => {
-        expect(less).to.contain('@one: #111111')
-        expect(less).to.contain('refToOne: @one')
+      return exporter.configure({})(tree).then((scss) => {
+        expect(scss).to.contain('$one: #111111')
+        expect(scss).to.contain('refToOne: $one')
       })
     })
     it('should export groups', () => {
@@ -82,10 +82,10 @@ h1:
   one: #111111
   refToOne: =one
 `)
-      return exporter.configure({})(tree).then((less) => {
-        expect(less).to.contain('h1 {')
-        expect(less).to.contain('@one: #111111')
-        expect(less).to.contain('refToOne: @one')
+      return exporter.configure({})(tree).then((scss) => {
+        expect(scss).to.contain('h1 {')
+        expect(scss).to.contain('$one: #111111')
+        expect(scss).to.contain('refToOne: $one')
       })
     })
     it('should change names based on mapping', () => {
@@ -94,10 +94,10 @@ h1:
   one: #111111
   fill: =one
 `)
-      return exporter.configure({mapProperties: true})(tree).then((less) => {
-        expect(less).to.contain('h1 {')
-        expect(less).to.contain('@one: #111111')
-        expect(less).to.contain('background-color: @one')
+      return exporter.configure({mapProperties: true})(tree).then((scss) => {
+        expect(scss).to.contain('h1 {')
+        expect(scss).to.contain('$one: #111111')
+        expect(scss).to.contain('background-color: $one')
       })
     })
   })

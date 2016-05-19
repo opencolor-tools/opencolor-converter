@@ -25,8 +25,8 @@ export const stylsheetImporter = function (input, options, syntax) {
       }
     }
 
-    //console.log(parseTree.toJson())
-    // less variables one root level
+    // console.log(parseTree.toJson())
+    // less variables definitions one root level
     parseTree.traverseByTypes(['atrule'], (node, index, parent) => {
       if (node.contains('color')) {
         var variableName = node.first('atkeyword').first('ident').content
@@ -35,6 +35,24 @@ export const stylsheetImporter = function (input, options, syntax) {
         ocoPalette.set(variableName, colorEntry)
       }
     })
+
+    // scss variables definitions one root level
+    parseTree.traverseByTypes(['declaration'], (node, index, parent) => {
+      if (node.contains('property') && node.first('property').contains('variable')) {
+        var variableName = node.first('property').first('variable').first('ident').content
+
+        if (node.contains('value') && node.first('value').contains('color')) {
+          var colorValue = Color('#' + node.first('value').first('color').content)
+          var colorEntry = new oco.Entry(variableName, [oco.ColorValue.fromColorValue(colorValue.hexString())])
+          ocoPalette.set(variableName, colorEntry)
+        } else if (node.contains('value') && node.first('value').contains('variable')) {
+          var path = node.first('value').first('variable').first('ident').content
+          var refrenceEntry = new oco.Reference(variableName, path)
+          ocoPalette.set(variableName, refrenceEntry)
+        }
+      }
+    })
+    /*
     // less variable assignments one root level
     parseTree.traverseByTypes(['declaration'], (node, index, parent) => {
       if (node.contains('value') && node.first('value').contains('variable')) {
@@ -44,7 +62,7 @@ export const stylsheetImporter = function (input, options, syntax) {
         ocoPalette.set(variableName, refrenceEntry)
       }
     })
-
+    */
     parseTree.traverseByTypes(['ruleset'], (node, index, parent) => {
       var selectors = []
       // class, id, typeSelector

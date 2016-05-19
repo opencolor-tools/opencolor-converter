@@ -12,8 +12,11 @@ describe('Converter API', () => {
   it('should convert css', () => {
     expect(converter).to.have.ownProperty('css')
   })
-  xit('should convert sass', () => {
-    expect(converter).to.have.ownProperty('sass')
+  it('should convert scss', () => {
+    expect(converter).to.have.ownProperty('scss')
+  })
+  it('should convert json', () => {
+    expect(converter).to.have.ownProperty('json')
   })
   it('all converter should be provide import and export', () => {
     Object.keys(converter).forEach((key) => {
