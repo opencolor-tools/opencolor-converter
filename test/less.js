@@ -66,6 +66,14 @@ color: #111111
         expect(css).to.contain('@color: #111111')
       })
     })
+    it('should export', () => {
+      const tree = oco.parse(`
+color: #111111
+`)
+      return exporter.configure({})(tree).then((css) => {
+        expect(css).to.contain('@color: #111111')
+      })
+    })
     it('should map properties', () => {
       const tree = oco.parse(`
 text: #111111
