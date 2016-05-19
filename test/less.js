@@ -62,32 +62,45 @@ body {
       const tree = oco.parse(`
 color: #111111
 `)
-      return exporter(tree).then((css) => {
-        expect(css).to.contain('@color: #111111')
+      return exporter(tree).then((less) => {
+        expect(less).to.contain('@color: #111111')
       })
     })
-    it('should export', () => {
+    it('should export refrences', () => {
       const tree = oco.parse(`
-color: #111111
+one: #111111
+refToOne: =one
 `)
-      return exporter.configure({})(tree).then((css) => {
-        expect(css).to.contain('@color: #111111')
+      return exporter.configure({})(tree).then((less) => {
+        expect(less).to.contain('@one: #111111')
+        expect(less).to.contain('refToOne: @one')
       })
     })
-    it('should map properties', () => {
+    it('should export groups', () => {
       const tree = oco.parse(`
-text: #111111
-bg: #222222
-fg: #333333
-fill: #444444
+h1:
+  one: #111111
+  refToOne: =one
 `)
-      return exporter(tree, {cssvariables: false, mapProperties: true})
-        .then((css) => {
-          expect(css).to.contain('color: #111111')
-          expect(css).to.contain('color: #333333')
-          expect(css).to.contain('background-color: #222222')
-          expect(css).to.contain('background-color: #444444')
-        })
+      return exporter.configure({})(tree).then((less) => {
+        console.log(less)
+        expect(less).to.contain('h1 {')
+        expect(less).to.contain('@one: #111111')
+        expect(less).to.contain('refToOne: @one')
+      })
+    })
+    it('should change names based on mapping', () => {
+      const tree = oco.parse(`
+h1:
+  one: #111111
+  fill: =one
+`)
+      return exporter.configure({mapProperties: true})(tree).then((less) => {
+        console.log(less)
+        expect(less).to.contain('h1 {')
+        expect(less).to.contain('@one: #111111')
+        expect(less).to.contain('background-color: @one')
+      })
     })
   })
 })

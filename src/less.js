@@ -41,16 +41,30 @@ function getPropertyName (entryName, options) {
 export const exporter = createExporter(defaultExporterOptions, (tree, options) => {
   return new Promise((resolve, reject) => {
     let lines = []
-    if (options.variables) {
-      tree.exportEntries((entry) => {
-        lines.push(`@${entry.name}: ${entry.hexcolor()};`)
-      })
-    }
-    if (options.mapProperties) {
-      tree.exportEntries((entry) => {
+    let indent = ''
+    let openPalette = null
+    tree.exportEntries((entry) => {
+      if (entry.parent !== openPalette) {
+        lines.push('}')
+        indent = '  '
+        openPalette = null
+      }
+      if (entry.type === 'Palette') {
+        lines.push(`${entry.name} {`)
+        indent = '  '
+        openPalette = entry
+      } else if (entry.type === 'Color') {
+        lines.push(`${indent}@${entry.name}: ${entry.hexcolor()};`)
+      } else if (entry.type === 'Reference') {
         var propertyName = getPropertyName(entry.name, options)
-        lines.push(`${propertyName}: ${entry.hexcolor()}`)
-      })
+        if (!propertyName) {
+          propertyName = entry.name
+        }
+        lines.push(`${indent}${propertyName}: @${entry.refName};`)
+      }
+    })
+    if (openPalette) {
+      lines.push('}')
     }
     resolve(lines.join('\n'))
   })
