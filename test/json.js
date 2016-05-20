@@ -34,15 +34,35 @@ describe('JSON Converter', () => {
         expect(tree.get('two').hexcolor()).to.equal('#222222')
       })
     })
+    it('should read name in object', () => {
+      return importer(`
+{
+  "hex": "#111111",
+  "name": "one"
+}
+      `, {readNameFromKey: true}).then((tree) => {
+        expect(tree.get('one').hexcolor()).to.equal('#111111')
+      })
+    })
+    it('should read name in object for custom key', () => {
+      return importer(`
+{
+  "hex": "#111111",
+  "id": "one"
+}
+      `, {readNameFromKey: true, keyForName: 'id'}).then((tree) => {
+        expect(tree.get('one').hexcolor()).to.equal('#111111')
+      })
+    })
     it('should import colors in arrays', () => {
       return importer(`
 {
   "data": ["#111111", "#222222", "#333333"]
 }
-`     ).then((tree) => {
-        expect(tree.get('data.0').hexcolor()).to.equal('#111111')
-        expect(tree.get('data.1').hexcolor()).to.equal('#222222')
-      })
+        `).then((tree) => {
+          expect(tree.get('data.0').hexcolor()).to.equal('#111111')
+          expect(tree.get('data.1').hexcolor()).to.equal('#222222')
+        })
     })
   })
   describe('Exporter', () => {

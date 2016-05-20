@@ -3,6 +3,8 @@ import oco from 'opencolor'
 import Color from 'color'
 
 const defaultImporterOptions = {
+  readNameFromKey: false,
+  keyForName: 'name'
 }
 
 const defaultExporterOptions = {
@@ -19,17 +21,17 @@ export const importer = createImporter(defaultImporterOptions, (input, options) 
   return new Promise((resolve, reject) => {
     var ocoPalette = new oco.Entry()
 
-    function walk (key, value, path, level) {
+    function walk (key, value, path, parent, level) {
       path = path.slice(0)
       if (Object.prototype.toString.call(value) === '[object Array]') {
         path.push(key)
         value.forEach((item, index) => {
-          walk(index, item, path, level + 1)
+          walk(index, item, path, value, level + 1)
         })
       } else if (typeof value === 'object') {
         path.push(key)
         Object.keys(value).forEach((k) => {
-          walk(k, value[k], path, level + 1)
+          walk(k, value[k], path, value, level + 1)
         })
       } else {
         var colorValue = null
@@ -37,14 +39,18 @@ export const importer = createImporter(defaultImporterOptions, (input, options) 
           colorValue = Color(value)
         } catch (e) {}
         if (colorValue) {
-          const color = new oco.Entry(key, [oco.ColorValue.fromColorValue(colorValue.hexString())])
-          path.push(key)
+          var name = key
+          if (options.readNameFromKey && typeof parent === 'object' && options.keyForName in parent) {
+            name = parent[options.keyForName]
+          }
+          const color = new oco.Entry(name, [oco.ColorValue.fromColorValue(colorValue.hexString())])
+          path.push(name)
           ocoPalette.set(path.join('.'), color)
         }
       }
     }
     Object.keys(tree).forEach((k) => {
-      walk(k, tree[k], [], 0)
+      walk(k, tree[k], [], tree, 0)
     })
 
     resolve(ocoPalette)
