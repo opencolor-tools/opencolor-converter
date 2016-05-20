@@ -45,20 +45,31 @@ describe('CSS Converter', () => {
     })
   })
   describe('Exporter', () => {
-    it('should import one color per ruleset', () => {
-      const tree = oco.parse(`
-color: #F00
-`)
+    it('should export colors as variables', () => {
+      const tree = oco.parse('color: #F00')
       return exporter(tree).then((css) => {
         expect(css).to.contain('--color: #FF0000')
       })
     })
+    it('should export references', () => {
+      const tree = oco.parse(`
+one: #111111
+h1:
+  oneRef: =one
+`)
+      return exporter(tree, {cssvariable: false, mapProperties: true}).then((css) => {
+        expect(css).to.contain('--one: #111111')
+        expect(css).to.contain('h1 {')
+        expect(css).to.contain('oneRef: var(one)')
+      })
+    })
     it('should map properties', () => {
       const tree = oco.parse(`
-text: #111111
-bg: #222222
-fg: #333333
-fill: #444444
+h1:
+  text: #111111
+  bg: #222222
+  fg: #333333
+  fill: #444444
 `)
       return exporter(tree, {cssvariables: false, mapProperties: true})
         .then((css) => {

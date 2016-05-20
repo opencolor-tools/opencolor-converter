@@ -44,15 +44,39 @@ export const exporter = createExporter(defaultExporterOptions, (tree, options) =
     if (options.cssvariables) {
       lines.push(':root {')
       tree.exportEntries((entry) => {
-        lines.push(`  --${entry.name}: ${entry.hexcolor()}`)
+        if (entry.type === 'Color') {
+          lines.push(`  --${entry.name}: ${entry.hexcolor()}`)
+        }
       })
       lines.push('}')
     }
     if (options.mapProperties) {
+      let indent = ''
+      let openPalette = null
       tree.exportEntries((entry) => {
+        if (indent.length && entry.parent !== openPalette) {
+          lines.push('}')
+          indent = '  '
+          openPalette = null
+        }
+        if (entry.type === 'Palette') {
+          lines.push(`${entry.name} {`)
+          indent = '  '
+          openPalette = entry
+        }
         var propertyName = getPropertyName(entry.name, options)
-        lines.push(`${propertyName}: ${entry.hexcolor()}`)
+        if (!propertyName) {
+          propertyName = entry.name
+        }
+        if (entry.type === 'Reference') {
+          lines.push(`${indent}${propertyName}: var(${entry.refName})`)
+        } else if (openPalette && entry.type === 'Color') {
+          lines.push(`${indent}--${propertyName}: ${entry.hexcolor()}`)
+        }
       })
+      if (openPalette) {
+        lines.push('}')
+      }
     }
     resolve(lines.join('\n'))
   })
