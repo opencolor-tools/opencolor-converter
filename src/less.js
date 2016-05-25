@@ -8,7 +8,6 @@ const defaultImporterOptions = {
 }
 
 const defaultExporterOptions = {
-  variables: true,
   mapProperties: false,
   propertyMapping: {
     'background-color': (name) => {
@@ -33,39 +32,39 @@ export const importer = createImporter(defaultImporterOptions, (input, options) 
 })
 
 function getPropertyName (entryName, options) {
-  return Object.keys(options.propertyMapping).find((propertyName) => {
+  if (!options.mapProperties) {
+    return entryName
+  }
+  let propertyName = Object.keys(options.propertyMapping).find((propertyName) => {
     return options.propertyMapping[propertyName](entryName)
   })
+  return propertyName || entryName
 }
 
 export const exporter = createExporter(defaultExporterOptions, (tree, options) => {
   return new Promise((resolve, reject) => {
     let lines = []
-    let indent = ''
-    let openPalette = null
-    tree.exportEntries((entry) => {
-      if (entry.parent !== openPalette) {
-        lines.push('}')
-        indent = '  '
-        openPalette = null
-      }
-      if (entry.type === 'Palette') {
-        lines.push(`${entry.name} {`)
-        indent = '  '
-        openPalette = entry
-      } else if (entry.type === 'Color') {
-        lines.push(`${indent}@${entry.name}: ${entry.hexcolor()};`)
-      } else if (entry.type === 'Reference') {
-        var propertyName = getPropertyName(entry.name, options)
-        if (!propertyName) {
-          propertyName = entry.name
+
+    function renderPalette (palette, level) {
+      let indent = Array(level).join('  ')
+      palette.forEach((entry) => {
+        if (entry.type === 'Palette') {
+          lines.push(`${indent}${entry.name} {`)
+          renderPalette(entry, level + 1)
+          lines.push(`${indent}`)
+        } else if (entry.type === 'Color') {
+          lines.push(`${indent}@${entry.name}: ${entry.hexcolor()};`)
+        } else if (entry.type === 'Reference') {
+          var propertyName = getPropertyName(entry.name, options)
+          if (!propertyName) {
+            propertyName = entry.name
+          }
+          lines.push(`${indent}${propertyName}: @${entry.refName};`)
         }
-        lines.push(`${indent}${propertyName}: @${entry.refName};`)
-      }
-    })
-    if (openPalette) {
-      lines.push('}')
+      })
     }
+    renderPalette(tree, 0)
+
     resolve(lines.join('\n'))
   })
 })

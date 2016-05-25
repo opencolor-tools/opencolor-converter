@@ -66,6 +66,19 @@ color: #111111
         expect(less).to.contain('@color: #111111')
       })
     })
+    it('should export more than one color', () => {
+      const tree = oco.parse(`
+one: #111111
+two: #222222
+three: #333333
+`)
+      return exporter(tree).then((less) => {
+        expect(less).to.equal(
+`@one: #111111;
+@two: #222222;
+@three: #333333;`)
+      })
+    })
     it('should export refrences', () => {
       const tree = oco.parse(`
 one: #111111
