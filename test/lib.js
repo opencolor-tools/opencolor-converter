@@ -6,7 +6,7 @@ describe('Converter API', () => {
   it('should convert less', () => {
     expect(converter).to.have.ownProperty('less')
   })
-  xit('should convert aco', () => {
+  it('should convert aco', () => {
     expect(converter).to.have.ownProperty('aco')
   })
   it('should convert css', () => {
