@@ -58,7 +58,7 @@ export const exporter = createExporter(defaultExporterOptions, (tree, options) =
           if (!propertyName) {
             propertyName = entry.name
           }
-          lines.push(`${indent}${propertyName}: $${entry.refName};`)
+          lines.push(`${indent}$${propertyName}: $${entry.refName};`)
         }
       })
     }

@@ -57,7 +57,7 @@ body {
       })
     })
   })
-  describe('Exporter', () => {
+  describe.only('Exporter', () => {
     it('should export', () => {
       const tree = oco.parse(`
 color: #111111
@@ -73,7 +73,7 @@ refToOne: =one
 `)
       return exporter.configure({})(tree).then((scss) => {
         expect(scss).to.contain('$one: #111111')
-        expect(scss).to.contain('refToOne: $one')
+        expect(scss).to.contain('$refToOne: $one')
       })
     })
     it('should export groups', () => {
@@ -85,7 +85,7 @@ h1:
       return exporter.configure({})(tree).then((scss) => {
         expect(scss).to.contain('h1 {')
         expect(scss).to.contain('$one: #111111')
-        expect(scss).to.contain('refToOne: $one')
+        expect(scss).to.contain('$refToOne: $one')
       })
     })
     it('should change names based on mapping', () => {
