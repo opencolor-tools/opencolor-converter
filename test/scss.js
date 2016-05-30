@@ -57,7 +57,7 @@ body {
       })
     })
   })
-  describe.only('Exporter', () => {
+  describe('Exporter', () => {
     it('should export', () => {
       const tree = oco.parse(`
 color: #111111
