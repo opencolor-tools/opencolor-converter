@@ -66,26 +66,29 @@ color: #111111
         expect(scss).to.contain('$color: #111111')
       })
     })
-    it('should export refrences', () => {
+    it('should export refrences (all vars)', () => {
       const tree = oco.parse(`
 one: #111111
 refToOne: =one
 `)
-      return exporter.configure({})(tree).then((scss) => {
+      return exporter.configure({allAsVars: true})(tree).then((scss) => {
         expect(scss).to.contain('$one: #111111')
         expect(scss).to.contain('$refToOne: $one')
       })
     })
     it('should export groups', () => {
       const tree = oco.parse(`
+one: #111111
 h1:
-  one: #111111
   refToOne: =one
 `)
       return exporter.configure({})(tree).then((scss) => {
-        expect(scss).to.contain('h1 {')
+        console.log(scss)
         expect(scss).to.contain('$one: #111111')
-        expect(scss).to.contain('$refToOne: $one')
+        expect(scss).to.contain('h1 {')
+        expect(scss).to.contain('refToOne: $one')
+        expect(scss).to.not.contain('$refToOne: $one')
+        expect(scss).to.contain('}')
       })
     })
     it('should change names based on mapping', () => {

@@ -9,15 +9,16 @@ const defaultImporterOptions = {
 
 const defaultExporterOptions = {
   mapProperties: false,
+  allAsVars: false,
   propertyMapping: {
     'background-color': (name) => {
       return /(background|bg|fill)/.test(name)
     },
     'color': (name) => {
-      return /(color|fg|text|font)/.test(name)
+      return /(color|fg|text|font|text-color)/.test(name)
     },
     'border': (name) => {
-      return /border.*/.test(name)
+      return /(border|stroke|border-color|stroke-color).*/.test(name)
     }
   }
 }
@@ -50,7 +51,7 @@ export const exporter = createExporter(defaultExporterOptions, (tree, options) =
         if (entry.type === 'Palette') {
           lines.push(`${indent}${entry.name} {`)
           renderPalette(entry, level + 1)
-          lines.push(`${indent}`)
+          lines.push(`${indent}}`)
         } else if (entry.type === 'Color') {
           lines.push(`${indent}$${entry.name}: ${entry.hexcolor()};`)
         } else if (entry.type === 'Reference') {
@@ -58,7 +59,12 @@ export const exporter = createExporter(defaultExporterOptions, (tree, options) =
           if (!propertyName) {
             propertyName = entry.name
           }
-          lines.push(`${indent}$${propertyName}: $${entry.refName};`)
+
+          if (options.allAsVars) {
+            lines.push(`${indent}$${propertyName}: $${entry.refName};`)
+          } else {
+            lines.push(`${indent}${propertyName}: $${entry.refName};`)
+          }
         }
       })
     }
