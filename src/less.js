@@ -46,12 +46,12 @@ export const exporter = createExporter(defaultExporterOptions, (tree, options) =
     let lines = []
 
     function renderPalette (palette, level) {
-      let indent = Array(level).join('  ')
+      let indent = Array(level + 1).join('  ')
       palette.forEach((entry) => {
         if (entry.type === 'Palette') {
           lines.push(`${indent}${entry.name} {`)
           renderPalette(entry, level + 1)
-          lines.push(`${indent}`)
+          lines.push(`${indent}}`)
         } else if (entry.type === 'Color') {
           lines.push(`${indent}@${entry.name}: ${entry.hexcolor()};`)
         } else if (entry.type === 'Reference') {

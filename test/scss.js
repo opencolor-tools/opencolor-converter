@@ -93,13 +93,13 @@ h1:
     })
     it('should change names based on mapping', () => {
       const tree = oco.parse(`
+one: #111111
 h1:
-  one: #111111
   fill: =one
 `)
       return exporter.configure({mapProperties: true})(tree).then((scss) => {
-        expect(scss).to.contain('h1 {')
         expect(scss).to.contain('$one: #111111')
+        expect(scss).to.contain('h1 {')
         expect(scss).to.contain('background-color: $one')
       })
     })

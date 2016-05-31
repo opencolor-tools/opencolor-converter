@@ -61,6 +61,7 @@ h1:
         expect(css).to.contain('--one: #111111')
         expect(css).to.contain('h1 {')
         expect(css).to.contain('oneRef: var(one)')
+        expect(css).to.contain('}')
       })
     })
     it('should map properties', () => {

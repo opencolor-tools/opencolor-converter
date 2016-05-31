@@ -99,6 +99,7 @@ h1:
         expect(less).to.contain('h1 {')
         expect(less).to.contain('@one: #111111')
         expect(less).to.contain('refToOne: @one')
+        expect(less).to.contain('}')
       })
     })
     it('should change names based on mapping', () => {
@@ -111,6 +112,7 @@ h1:
         expect(less).to.contain('h1 {')
         expect(less).to.contain('@one: #111111')
         expect(less).to.contain('background-color: @one')
+        expect(less).to.contain('}')
       })
     })
   })
