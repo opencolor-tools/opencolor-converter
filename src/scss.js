@@ -46,7 +46,8 @@ export const exporter = createExporter(defaultExporterOptions, (tree, options) =
   return new Promise((resolve, reject) => {
     let lines = []
     function renderPalette (palette, level) {
-      let indent = Array(level).join('  ')
+      let indent = Array(level + 1).join('  ')
+
       palette.forEach((entry) => {
         if (entry.type === 'Palette') {
           lines.push(`${indent}${entry.name} {`)
