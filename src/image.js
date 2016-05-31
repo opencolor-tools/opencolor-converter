@@ -10,10 +10,16 @@ const defaultImporterOptions = {
 export const importer = createImporter(defaultImporterOptions, (input, options) => {
   return new Promise((resolve, reject) => {
     Vibrant.from(input).getPalette(function (err, palette) {
+      if (err) {
+        Promise.reject(err)
+      }
+
       let paletteJson = {}
 
       for (var key in palette) {
-        paletteJson[key] = palette[key].getHex()
+        if (palette[key] !== null) {
+          paletteJson[key] = palette[key].getHex()
+        }
       }
 
       paletteJson = JSON.stringify(paletteJson)
