@@ -33,6 +33,6 @@
     "binary": "^0.3.0",
     "color": "^0.11.1",
     "gonzales-pe": "^3.2.6",
-    "opencolor": "github:opencolor-tools/opencolor-js#v0.0.11"
+    "opencolor": "opencolor-tools/opencolor-js#v0.0.14"
   }
 }
