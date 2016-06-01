@@ -8,7 +8,7 @@ const defaultImporterOptions = {
 }
 
 const defaultExporterOptions = {
-  mapProperties: false,
+  mapProperties: true,
   allAsVars: false,
   propertyMapping: {
     'background-color': (name) => {
@@ -17,7 +17,7 @@ const defaultExporterOptions = {
     'color': (name) => {
       return /(color|fg|text|font|text-color)/.test(name)
     },
-    'border': (name) => {
+    'border-color': (name) => {
       return /(border|stroke|border-color|stroke-color).*/.test(name)
     }
   }
@@ -42,6 +42,14 @@ function getPropertyName (entryName, options) {
   return propertyName || entryName
 }
 
+function isColorProperty (entryName, options) {
+  for (var colorProperty in options.propertyMapping) {
+    if (colorProperty === entryName) { return true }
+  }
+
+  return false
+}
+
 export const exporter = createExporter(defaultExporterOptions, (tree, options) => {
   return new Promise((resolve, reject) => {
     let lines = []
@@ -54,14 +62,17 @@ export const exporter = createExporter(defaultExporterOptions, (tree, options) =
           renderPalette(entry, level + 1)
           lines.push(`${indent}}`)
         } else if (entry.type === 'Color') {
-          lines.push(`${indent}$${entry.name}: ${entry.hexcolor()};`)
-        } else if (entry.type === 'Reference') {
           var propertyName = getPropertyName(entry.name, options)
-          if (!propertyName) {
-            propertyName = entry.name
-          }
 
-          if (options.allAsVars) {
+          if (options.allAsVars || level === 0 || !isColorProperty(propertyName, options)) {
+            lines.push(`${indent}$${propertyName}: ${entry.hexcolor()};`)
+          } else {
+            lines.push(`${indent}${propertyName}: ${entry.hexcolor()};`)
+          }
+        } else if (entry.type === 'Reference') {
+          propertyName = getPropertyName(entry.name, options)
+
+          if (options.allAsVars || level === 0 || !isColorProperty(propertyName, options)) {
             lines.push(`${indent}$${propertyName}: $${entry.refName};`)
           } else {
             lines.push(`${indent}${propertyName}: $${entry.refName};`)
