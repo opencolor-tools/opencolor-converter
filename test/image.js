@@ -10,14 +10,14 @@ describe('Image Converter', () => {
     it('should import png', () => {
       return importer(png).then((tree) => {
         expect(tree.children.length).to.be.greaterThan(1)
-        expect(tree.get('Color0')).to.not.be.undefined
+        expect(tree.get('Color 1')).to.not.be.undefined
       })
     })
     const jpg = fs.readFileSync(path.join(__dirname, 'fixtures', 'image.jpg'))
     it('should import jpg', () => {
       return importer(jpg).then((tree) => {
         expect(tree.children.length).to.be.greaterThan(1)
-        expect(tree.get('Color0')).to.not.be.undefined
+        expect(tree.get('Color 1')).to.not.be.undefined
       })
     })
     it('should import png using Vibrant', () => {

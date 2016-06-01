@@ -6,7 +6,8 @@ import getColors from 'get-image-colors'
 import fileType from 'file-type'
 
 const defaultImporterOptions = {
-  importer: 'basic'
+  importer: 'basic',
+  colors: 8
 }
 
 export const importer = createImporter(defaultImporterOptions, (input, options) => {
@@ -76,7 +77,7 @@ export const importer = createImporter(defaultImporterOptions, (input, options) 
     return new Promise((resolve, reject) => {
       let mimeType = fileType(input).mime
 
-      getColors(input, mimeType, function (err, palette) {
+      getColors(input, mimeType, options.colors, function (err, palette) {
         if (err) {
           Promise.reject(err)
         }
@@ -84,7 +85,7 @@ export const importer = createImporter(defaultImporterOptions, (input, options) 
         let paletteJson = {}
 
         for (var i = 0; i < palette.length; i++) {
-          paletteJson['Color' + i] = palette[i].hex()
+          paletteJson['Color ' + (i + 1)] = palette[i].hex()
         }
 
         paletteJson = JSON.stringify(paletteJson)
