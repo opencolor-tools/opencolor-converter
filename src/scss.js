@@ -46,7 +46,6 @@ function isColorProperty (entryName, options) {
   for (var colorProperty in options.propertyMapping) {
     if (colorProperty === entryName) { return true }
   }
-
   return false
 }
 

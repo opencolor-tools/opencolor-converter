@@ -60,59 +60,76 @@ body {
   describe('Exporter', () => {
     it('should export', () => {
       const tree = oco.parse(`
-color: #111111
+one: #111111
 `)
-      return exporter(tree).then((less) => {
-        expect(less).to.contain('@color: #111111')
+      return exporter(tree).then((scss) => {
+        expect(scss).to.contain('@one: #111111')
       })
     })
-    it('should export more than one color', () => {
+    it('should export all entrys in root as vars', () => {
       const tree = oco.parse(`
 one: #111111
-two: #222222
-three: #333333
+color: =one
 `)
-      return exporter(tree).then((less) => {
-        expect(less).to.equal(
-`@one: #111111;
-@two: #222222;
-@three: #333333;`)
+      return exporter.configure()(tree).then((scss) => {
+        expect(scss).to.contain('@one: #111111')
+        expect(scss).to.contain('@color: @one')
       })
     })
-    it('should export refrences', () => {
+    it('should export groups (only turn names that are not a color attribute into vars)', () => {
       const tree = oco.parse(`
 one: #111111
-refToOne: =one
-`)
-      return exporter.configure({})(tree).then((less) => {
-        expect(less).to.contain('@one: #111111')
-        expect(less).to.contain('refToOne: @one')
-      })
-    })
-    it('should export groups', () => {
-      const tree = oco.parse(`
 h1:
-  one: #111111
-  refToOne: =one
+  two: #FF0000
+  three: =one
+  fill: =one
+  color: #FF0000
 `)
-      return exporter.configure({})(tree).then((less) => {
-        expect(less).to.contain('h1 {')
-        expect(less).to.contain('@one: #111111')
-        expect(less).to.contain('refToOne: @one')
-        expect(less).to.contain('}')
+      return exporter.configure({})(tree).then((scss) => {
+        expect(scss).to.contain('@one: #111111')
+        expect(scss).to.contain('h1 {')
+        expect(scss).to.contain('@two: #FF0000')
+        expect(scss).to.contain('@three: @one')
+        expect(scss).to.contain('background-color: @one')
+        expect(scss).to.not.contain('@background-color: @one')
+        expect(scss).to.contain('color: #FF0000')
+        expect(scss).to.not.contain('@color: #FF0000')
+        expect(scss).to.contain('}')
+      })
+    })
+    it('should export groups (with turn all into vars options)', () => {
+      const tree = oco.parse(`
+one: #111111
+h1:
+  two: #FF0000
+  background-color: =one
+`)
+      return exporter.configure({allAsVars: true})(tree).then((scss) => {
+        expect(scss).to.contain('@one: #111111')
+        expect(scss).to.contain('h1 {')
+        expect(scss).to.contain('@two: #FF0000')
+        expect(scss).to.contain('@background-color: @one')
+        expect(scss).to.contain('}')
+      })
+    })
+    it('should export references', () => {
+      const tree = oco.parse(`
+one: #111111
+two: =one
+`)
+      return exporter.configure({allAsVars: true})(tree).then((scss) => {
+        expect(scss).to.contain('@one: #111111')
+        expect(scss).to.contain('@two: @one')
       })
     })
     it('should change names based on mapping', () => {
       const tree = oco.parse(`
 h1:
-  one: #111111
-  fill: =one
+  fill: #FF0000
 `)
-      return exporter.configure({mapProperties: true})(tree).then((less) => {
-        expect(less).to.contain('h1 {')
-        expect(less).to.contain('@one: #111111')
-        expect(less).to.contain('background-color: @one')
-        expect(less).to.contain('}')
+      return exporter.configure()(tree).then((scss) => {
+        expect(scss).to.contain('h1 {')
+        expect(scss).to.contain('background-color: #FF0000')
       })
     })
   })
