@@ -1,6 +1,6 @@
 {
   "name": "opencolor-converter",
-  "version": "2.1.0",
+  "version": "2.1.11",
   "description": "Converts files with colors towards Open Color File Format",
   "main": "lib/index.js",
   "scripts": {
@@ -36,6 +36,6 @@
     "get-image-colors": "github:ChristophLabacher/get-image-colors",
     "gonzales-pe": "^3.2.6",
     "node-vibrant": "^2.1.2",
-    "opencolor": "opencolor-tools/opencolor-js#v0.0.15"
+    "opencolor": "opencolor-tools/opencolor-js#v0.0.16"
   }
 }
