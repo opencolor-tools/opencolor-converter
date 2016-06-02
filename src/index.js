@@ -4,6 +4,7 @@ import less from './less'
 import json from './json'
 import scss from './scss'
 import image from './image'
+import swift from './swift'
 
 export {
   aco,
@@ -11,5 +12,6 @@ export {
   less,
   scss,
   json,
-  image
+  image,
+  swift
 }
