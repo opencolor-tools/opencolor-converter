@@ -1,6 +1,6 @@
 {
   "name": "opencolor-converter",
-  "version": "2.1.11",
+  "version": "2.1.12",
   "description": "Converts files with colors towards Open Color File Format",
   "main": "lib/index.js",
   "scripts": {
