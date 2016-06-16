@@ -36,6 +36,6 @@
     "get-image-colors": "github:ChristophLabacher/get-image-colors",
     "gonzales-pe": "^3.2.6",
     "node-vibrant": "^2.1.2",
-    "opencolor": "opencolor-tools/opencolor-js#v0.0.16"
+    "opencolor": "0.1.0"
   }
 }
