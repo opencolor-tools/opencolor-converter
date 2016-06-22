@@ -1,5 +1,5 @@
 import {createImporter, createExporter} from './factory'
-import oco from 'opencolor'
+import {Entry, ColorValue} from 'opencolor'
 import Color from 'color'
 
 const defaultImporterOptions = {
@@ -19,7 +19,7 @@ export const importer = createImporter(defaultImporterOptions, (input, options) 
     Promise.reject(e)
   }
   return new Promise((resolve, reject) => {
-    var ocoPalette = new oco.Entry()
+    var ocoPalette = new Entry()
 
     function walk (key, value, path, parent, level) {
       path = path.slice(0)
@@ -43,7 +43,7 @@ export const importer = createImporter(defaultImporterOptions, (input, options) 
           if (options.readNameFromKey && typeof parent === 'object' && options.keyForName in parent) {
             name = parent[options.keyForName]
           }
-          const color = new oco.Entry(name, [oco.ColorValue.fromColorValue(colorValue.hexString())])
+          const color = new Entry(name, [ColorValue.fromColorValue(colorValue.hexString())])
           path.push(name)
           ocoPalette.set(path.join('.'), color)
         }

@@ -1,5 +1,5 @@
 import {createImporter, createExporter} from './factory'
-import oco from 'opencolor'
+import {Entry, ColorValue} from 'opencolor'
 import Color from 'color'
 import binary from 'binary'
 
@@ -8,7 +8,7 @@ const defaultImporterOptions = {}
 export const importer = createImporter(defaultImporterOptions, (input, options) => {
   return new Promise((resolve, reject) => {
     var buf = input
-    var ocoPalette = new oco.Entry()
+    var ocoPalette = new Entry()
 
     // https:// github.com/teemualap/grunt-aco2less
     var nTotalColors = 0
@@ -124,7 +124,7 @@ export const importer = createImporter(defaultImporterOptions, (input, options) 
       if (color.colorSpace === 0) {
         // RGB
         var colorValue = Color().rgb(color.w / 256, color.x / 256, color.y / 256)
-        const colorEntry = new oco.Entry(colorName, [oco.ColorValue.fromColorValue(colorValue.hexString())])
+        const colorEntry = new Entry(colorName, [ColorValue.fromColorValue(colorValue.hexString())])
 
         path.push(colorName)
 

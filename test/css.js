@@ -1,6 +1,6 @@
 /* eslint-env mocha */
 import {expect} from 'chai'
-import oco from 'opencolor'
+import {parse} from 'opencolor'
 import {importer, exporter} from '../src/css'
 
 describe('CSS Converter', () => {
@@ -46,7 +46,7 @@ describe('CSS Converter', () => {
   })
   describe('Exporter', () => {
     it('should export', () => {
-      const tree = oco.parse(`
+      const tree = parse(`
 one: #111111
 `)
       return exporter(tree).then((scss) => {
@@ -54,7 +54,7 @@ one: #111111
       })
     })
     it('should export all entrys in root as vars', () => {
-      const tree = oco.parse(`
+      const tree = parse(`
 one: #111111
 color: =one
 `)
@@ -64,7 +64,7 @@ color: =one
       })
     })
     it('should export groups (only turn names that are not a color attribute into vars)', () => {
-      const tree = oco.parse(`
+      const tree = parse(`
 one: #111111
 h1:
   two: #FF0000
@@ -85,7 +85,7 @@ h1:
       })
     })
     it('should export groups (with turn all into vars options)', () => {
-      const tree = oco.parse(`
+      const tree = parse(`
 one: #111111
 h1:
   two: #FF0000
@@ -100,7 +100,7 @@ h1:
       })
     })
     it('should export references', () => {
-      const tree = oco.parse(`
+      const tree = parse(`
 one: #111111
 two: =one
 `)
@@ -110,7 +110,7 @@ two: =one
       })
     })
     it('should change names based on mapping', () => {
-      const tree = oco.parse(`
+      const tree = parse(`
 h1:
   fill: #FF0000
 `)
