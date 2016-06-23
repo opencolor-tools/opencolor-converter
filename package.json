@@ -1,6 +1,6 @@
 {
   "name": "opencolor-converter",
-  "version": "2.1.18",
+  "version": "2.1.19",
   "description": "Converts files with colors towards Open Color File Format",
   "main": "lib/index.js",
   "scripts": {
@@ -16,6 +16,7 @@
     "url": "https://github.com/opencolor-tools/opencolor-converter/issues"
   },
   "homepage": "https://github.com/opencolor-tools/opencolor-converter",
+  "repository": "https://github.com/opencolor-tools/opencolor-converter",
   "devDependencies": {
     "babel-cli": "^6.8.0",
     "babel-core": "^6.8.0",
@@ -36,6 +37,6 @@
     "get-image-colors": "github:ChristophLabacher/get-image-colors",
     "gonzales-pe": "^3.2.6",
     "node-vibrant": "^2.1.2",
-    "opencolor": "0.1.0"
+    "opencolor": "^0.2.0"
   }
 }

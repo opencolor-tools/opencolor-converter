@@ -1,12 +1,12 @@
 /* eslint-env mocha */
 import {expect} from 'chai'
-import oco from 'opencolor'
+import {parse} from 'opencolor'
 import {exporter} from '../src/swift'
 
 describe('Swift Converter', () => {
   describe('Exporter', () => {
     it('should export', () => {
-      const tree = oco.parse(`
+      const tree = parse(`
 one: #FFFFFF
 `)
       return exporter(tree).then((scss) => {
@@ -14,7 +14,7 @@ one: #FFFFFF
       })
     })
     it('should export references', () => {
-      const tree = oco.parse(`
+      const tree = parse(`
 one: #FFFFFF
 two: =one
 `)

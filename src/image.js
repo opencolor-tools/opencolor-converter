@@ -1,5 +1,5 @@
 import {createImporter, createExporter} from './factory'
-import oco from 'opencolor'
+import {Entry, ColorValue} from 'opencolor'
 import Color from 'color'
 import Vibrant from 'node-vibrant'
 import getColors from 'get-image-colors'
@@ -36,7 +36,7 @@ export const importer = createImporter(defaultImporterOptions, (input, options) 
           Promise.reject(e)
         }
 
-        var ocoPalette = new oco.Entry()
+        var ocoPalette = new Entry()
 
         function walk (key, value, path, parent, level) {
           path = path.slice(0)
@@ -60,7 +60,7 @@ export const importer = createImporter(defaultImporterOptions, (input, options) 
               if (options.readNameFromKey && typeof parent === 'object' && options.keyForName in parent) {
                 name = parent[options.keyForName]
               }
-              const color = new oco.Entry(name, [oco.ColorValue.fromColorValue(colorValue.hexString())])
+              const color = new Entry(name, [ColorValue.fromColorValue(colorValue.hexString())])
               path.push(name)
               ocoPalette.set(path.join('.'), color)
             }
@@ -98,7 +98,7 @@ export const importer = createImporter(defaultImporterOptions, (input, options) 
           Promise.reject(e)
         }
 
-        var ocoPalette = new oco.Entry()
+        var ocoPalette = new Entry()
 
         function walk (key, value, path, parent, level) {
           path = path.slice(0)
@@ -122,7 +122,7 @@ export const importer = createImporter(defaultImporterOptions, (input, options) 
               if (options.readNameFromKey && typeof parent === 'object' && options.keyForName in parent) {
                 name = parent[options.keyForName]
               }
-              const color = new oco.Entry(name, [oco.ColorValue.fromColorValue(colorValue.hexString())])
+              const color = new Entry(name, [ColorValue.fromColorValue(colorValue.hexString())])
               path.push(name)
               ocoPalette.set(path.join('.'), color)
             }

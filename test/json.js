@@ -1,6 +1,6 @@
 /* eslint-env mocha */
 import {expect} from 'chai'
-import oco from 'opencolor'
+import {parse} from 'opencolor'
 import {importer, exporter} from '../src/json'
 
 describe('JSON Converter', () => {
@@ -67,7 +67,7 @@ describe('JSON Converter', () => {
   })
   describe('Exporter', () => {
     it('should export', () => {
-      const tree = oco.parse(`
+      const tree = parse(`
 color: #111111
 `)
       return exporter(tree).then((json) => {
@@ -75,7 +75,7 @@ color: #111111
       })
     })
     it('should export sub palettes', () => {
-      const tree = oco.parse(`
+      const tree = parse(`
 group:
   one: #111111
 othergroup:
@@ -87,7 +87,7 @@ othergroup:
       })
     })
     it('should export references', () => {
-      const tree = oco.parse(`
+      const tree = parse(`
 group:
   one: #111111
 othergroup:
