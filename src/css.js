@@ -3,7 +3,7 @@ import {createImporter, createExporter} from './factory'
 
 const defaultImporterOptions = {
   selectors: ['class', 'id', 'typeSelector'],
-  groupBySelector: false,
+  groupBySelector: true,
   useOnlyTheFirstSelector: false
 }
 
