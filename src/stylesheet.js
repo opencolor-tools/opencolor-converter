@@ -9,7 +9,7 @@ export const stylsheetImporter = function (input, options, syntax) {
     var parseTree = gonzales.parse(input, {syntax: syntax})
 
     var selectorPropertyGlue = ' - '
-    if (!options.groupBySelector) {
+    if (options.groupBySelector) {
       selectorPropertyGlue = '.'
     }
 
