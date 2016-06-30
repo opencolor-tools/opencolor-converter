@@ -36,8 +36,11 @@ function getPropertyName (entryName, options) {
   if (!options.mapProperties) {
     return entryName
   }
-  let propertyName = Object.keys(options.propertyMapping).find((propertyName) => {
-    return options.propertyMapping[propertyName](entryName)
+  let propertyName = '';
+  Object.keys(options.propertyMapping).forEach((prop) => {
+    if (options.propertyMapping[prop](entryName) && !propertyName) {
+      propertyName = prop;
+    }
   })
   return propertyName || entryName
 }
