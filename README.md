@@ -1,5 +1,7 @@
 # Open Color Converter
 
+Build status: ![Build Status](https://travis-ci.org/opencolor-tools/opencolor-converter.svg?branch=master)
+
 Scripts to convert palette information into the open color format.
 
 ## Aco
