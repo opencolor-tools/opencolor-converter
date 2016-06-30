@@ -101,27 +101,3 @@ export const stylsheetImporter = function (input, options, syntax) {
     resolve(ocoPalette)
   })
 }
-
-export const stringifyAsStylsheet = (palette, startLevel, propertyNameResolver) => {
-  let lines = []
-  function stringifyPalette (palette, level) {
-    let indent = Array(level).join('  ')
-    palette.forEach((entry) => {
-      if (entry.type === 'Palette') {
-        lines.push(`${indent}${entry.name} {`)
-        stringifyPalette(entry, level + 1)
-        lines.push(`${indent}`)
-      } else if (entry.type === 'Color') {
-        lines.push(`${indent}@${entry.name}: ${entry.hexcolor()};`)
-      } else if (entry.type === 'Reference') {
-        var propertyName = getPropertyName(entry.name, options)
-        if (!propertyName) {
-          propertyName = entry.name
-        }
-        lines.push(`${indent}${propertyName}: @${entry.refName};`)
-      }
-    })
-  }
-
-  stringifyPalette(palette, startLevel)
-}
