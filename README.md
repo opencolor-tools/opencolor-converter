@@ -14,6 +14,12 @@ The frist example demonstrates the conversion of Material Palette.aco into an oc
 
 ## CSS
 
+## JSON
+
+## Swift
+
+## PNG / JPEG
+
 # Examples
 
 ```
