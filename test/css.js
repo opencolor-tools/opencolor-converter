@@ -75,7 +75,7 @@ h1:
       return exporter.configure({})(tree).then((scss) => {
         expect(scss).to.contain('--one: #111111')
         expect(scss).to.contain('h1 {')
-        expect(scss).to.contain('-two: #FF0000')
+        expect(scss).to.contain('--two: #FF0000')
         expect(scss).to.contain('--three: var(one)')
         expect(scss).to.contain('background-color: var(one)')
         expect(scss).to.not.contain('--background-color: var(one)')
