@@ -17,9 +17,8 @@ describe('ACO Converter', () => {
     const aco2 = fs.readFileSync(path.join(__dirname, 'fixtures', 'namics15_colors.aco'))
     it('should import the right colors', () => {
       return importer(aco2).then((tree) => {
-        console.log(tree)
         expect(tree.children.length).to.be.greaterThan(1)
-        expect(tree.get('DigitalCommunications_yellow').hexcolor()).to.equal('#fbe937')
+        expect(tree.get('DigitalCommunications_yellow').hexcolor()).to.equal('#FBE937')
       })
     })
   })

@@ -123,7 +123,7 @@ export const importer = createImporter(defaultImporterOptions, (input, options) 
       // calculate color values and write them to the palette
       if (color.colorSpace === 0) {
         // RGB
-        var colorValue = Color().rgb(color.w / 256, color.x / 256, color.y / 256)
+        var colorValue = Color().rgb(Math.floor(color.w / 256), Math.floor(color.x / 256), Math.floor(color.y / 256))
         const colorEntry = new Entry(colorName, [ColorValue.fromColorValue(colorValue.hexString())])
 
         path.push(colorName)
