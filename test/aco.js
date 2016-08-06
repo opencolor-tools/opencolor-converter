@@ -5,7 +5,7 @@ import * as fs from 'fs'
 import * as path from 'path'
 
 describe('ACO Converter', () => {
-  describe.only('Importer', () => {
+  describe('Importer', () => {
     const aco = fs.readFileSync(path.join(__dirname, 'fixtures', 'Material Palette.aco'))
     it('should import one variable', () => {
       return importer(aco).then((tree) => {
