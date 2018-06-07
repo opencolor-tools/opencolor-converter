@@ -1,5 +1,11 @@
-import {createImporter, createExporter} from './factory'
-import {Entry, ColorValue} from 'opencolor'
+import {
+  createImporter, createExporter
+}
+from './factory'
+import {
+  Entry, ColorValue
+}
+from 'opencolor'
 import Color from 'color'
 
 const defaultImporterOptions = {
@@ -40,10 +46,12 @@ export const importer = createImporter(defaultImporterOptions, (input, options) 
         } catch (e) {}
         if (colorValue) {
           var name = key
-          if (options.readNameFromKey && typeof parent === 'object' && options.keyForName in parent) {
+          if (options.readNameFromKey && typeof parent === 'object' &&
+            options.keyForName in parent) {
             name = parent[options.keyForName]
           }
-          const color = new Entry(name, [ColorValue.fromColorValue(colorValue.hexString())])
+          const color = new Entry(name, [ColorValue.fromColorValue(
+            colorValue.hexString())])
           path.push(name)
           ocoPalette.set(path.join('.'), color)
         }
@@ -82,7 +90,51 @@ export const exporter = createExporter(defaultExporterOptions, (tree, options) =
   })
 })
 
+export const exporterAdvanced = createExporter(defaultExporterOptions, (tree,
+  options) => {
+  function processMetadata (entry) {
+    let metadata = {}
+
+    entry.metadata.keys().forEach(key => {
+      let context = key.split('/')[0]
+      let attribute = key.split('/')[1]
+      if (!metadata[context]) metadata[context] = {}
+      let value = entry.metadata.get(key)
+      if (value.type === 'Reference') value = '=' + value.refName
+      metadata[context][attribute] = value
+    })
+
+    return metadata
+  }
+
+  return new Promise((resolve, reject) => {
+    let out = {
+      metadata: processMetadata(tree),
+      colorGroups: []
+    }
+
+    let currentPalette = null
+    tree.exportEntries(entry => {
+      if (entry.type === 'Palette') {
+        currentPalette = {
+          name: entry.name,
+          metadata: processMetadata(entry),
+          shades: {}
+        }
+        out.colorGroups.push(currentPalette)
+      } else if (entry.type === 'Color') {
+        currentPalette.shades[entry.name] = entry.hexcolor()
+      } else if (entry.type === 'Reference') {
+        currentPalette.shades[entry.name] = '=' + entry.refName
+      }
+    })
+
+    resolve(JSON.stringify(out, null, '  '))
+  })
+})
+
 export default {
   exporter: exporter,
+  exporterAdvanced: exporterAdvanced,
   importer: importer
 }
