@@ -14,7 +14,6 @@ const defaultImporterOptions = {
 }
 
 const defaultExporterOptions = {
-
 }
 
 export const importer = createImporter(defaultImporterOptions, (input, options) => {
@@ -90,51 +89,7 @@ export const exporter = createExporter(defaultExporterOptions, (tree, options) =
   })
 })
 
-export const exporterAdvanced = createExporter(defaultExporterOptions, (tree,
-  options) => {
-  function processMetadata (entry) {
-    let metadata = {}
-
-    entry.metadata.keys().forEach(key => {
-      let context = key.split('/')[0]
-      let attribute = key.split('/')[1]
-      if (!metadata[context]) metadata[context] = {}
-      let value = entry.metadata.get(key)
-      if (value.type === 'Reference') value = '=' + value.refName
-      metadata[context][attribute] = value
-    })
-
-    return metadata
-  }
-
-  return new Promise((resolve, reject) => {
-    let out = {
-      metadata: processMetadata(tree),
-      colorGroups: []
-    }
-
-    let currentPalette = null
-    tree.exportEntries(entry => {
-      if (entry.type === 'Palette') {
-        currentPalette = {
-          name: entry.name,
-          metadata: processMetadata(entry),
-          shades: {}
-        }
-        out.colorGroups.push(currentPalette)
-      } else if (entry.type === 'Color') {
-        currentPalette.shades[entry.name] = entry.hexcolor()
-      } else if (entry.type === 'Reference') {
-        currentPalette.shades[entry.name] = '=' + entry.refName
-      }
-    })
-
-    resolve(JSON.stringify(out, null, '  '))
-  })
-})
-
 export default {
   exporter: exporter,
-  exporterAdvanced: exporterAdvanced,
   importer: importer
 }
